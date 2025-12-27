@@ -1,0 +1,1249 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Glog.AI",
+          "organization": "Glog.AI",
+          "fullName": "Glog, Making software more secure",
+          "version": "1.0.0",
+          "semanticVersion": "1.0.0",
+          "informationUri": "https://www.glog.ai",
+          "rules": [
+            {
+              "id": "4f964b1c-7ec8-3f51-a389-a71a1f67eb66",
+              "name": "Non-literal variable string concatenation vulnerability in util.format/console.log function",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nIn JavaScript, the `util.format/console.log` function is used to format and print strings. A non-literal variable string concatenation vulnerability occurs when user-controlled data is concatenated into a string that is then processed by the `util.format/console.log` function. This can lead to various types of attacks, such as command injection, cross-site scripting (XSS), and SQL injection, depending on the context in which the function is used.\n\nIn the provided code snippet, the variable `parserName` is concatenated into a string that is then passed to the `console.error` function. If an attacker can control the value of `parserName`, they could potentially inject malicious code that is then executed when the `console.error` function is called.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid including user-controlled data in strings that are processed by the `util.format/console.log` function. If this is not possible, ensure that the user-controlled data is properly sanitized and escaped before it is included in the string.\n\n## Source Code Fix Recommendation\n\n```javascript\n// Assuming e is an instance of Error\nconsole.error(`Error parsing event [parser:${encodeURIComponent(parserName)}]:`, e.message);\n```\n\nIn this fix, the `encodeURIComponent` function is used to sanitize the `parserName` variable before it is included in the string. This will prevent any potentially malicious code from being executed.\n\n## Library Dependencies\n\nThe provided code snippet does not require any library dependencies to execute properly.\n\n## OWASP Resources\n\n- [OWASP - Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [OWASP - Cross-Site Scripting (XSS)](https://owasp.org/www-community/attacks/xss/)\n- [OWASP - SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-74: Improper Neutralization of Special Elements in Output Used by a Downstream Component ('Injection')](https://cwe.mitre.org/data/definitions/74.html)\n- [CWE-116: Improper Encoding or Escaping of Output](https://cwe.mitre.org/data/definitions/116.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-74",
+                    "url": "https://cwe.mitre.org/data/definitions/74.html"
+                  },
+                  {
+                    "id": "CWE-116",
+                    "url": "https://cwe.mitre.org/data/definitions/116.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-74",
+                  "CWE-116"
+                ]
+              }
+            },
+            {
+              "id": "5195880b-c0e9-3d85-a865-ac44192f91ca",
+              "name": "Non-literal variable string concatenation vulnerability in util.format/console.log function",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Non-literal variable string concatenation vulnerability in util.format/console.log function\" in JavaScript refers to a situation where an attacker can manipulate the string that is passed to the `console.log` or `util.format` function. This can lead to various security issues such as information disclosure, log injection, or even remote code execution in some cases.\n\nIn the provided code snippet, the `parser.name` variable is directly embedded into the string that is passed to the `console.error` function. If an attacker can control the value of `parser.name`, they could potentially inject malicious content into the logs.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid directly embedding user-controlled variables into strings that are passed to logging functions. Instead, use parameterized messages or sanitize the user input before using it.\n\n## Source Code Fix Recommendation\n\nHere is a safer version of the provided code snippet:\n\n```javascript\nconsole.error('matchToParser[%s]', parser.name, err);\n```\n\nIn this version, the `parser.name` variable is passed as a separate argument to the `console.error` function, which prevents it from being able to manipulate the format of the log message.\n\n## Library Dependencies\n\nThe provided code snippet does not appear to require any specific library dependencies to execute properly.\n\n## OWASP Resources\n\n- [OWASP Top 10 2017: Injection](https://owasp.org/www-project-top-ten/2017/A1_2017-Injection)\n- [OWASP Cheat Sheet: Logging](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-117: Improper Output Neutralization for Logs](https://cwe.mitre.org/data/definitions/117.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-117",
+                    "url": "https://cwe.mitre.org/data/definitions/117.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-117"
+                ]
+              }
+            },
+            {
+              "id": "8554548d-ee43-3513-85a1-fe40d82183df",
+              "name": "Potential XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when an application includes untrusted data in a new web page without proper validation or escaping, or updates an existing web page with user-supplied data using a browser API that can create HTML or JavaScript. XSS allows attackers to execute scripts in the victim's browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.\n\nIn the provided code snippet, the application is dynamically requiring a parser module based on a user-controlled `name` variable. If an attacker can control the `name` variable, they could potentially load arbitrary modules, leading to a variety of attacks, including XSS.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should:\n\n1. Avoid using user-controlled data to load modules dynamically. If dynamic loading is necessary, maintain a whitelist of allowed modules and reject any input that does not match the whitelist.\n2. Validate and sanitize user input. Use a known library or framework that makes it easy to escape potentially harmful characters.\n3. Use Content Security Policy (CSP) to reduce the severity of any XSS vulnerabilities.\n\n## Source Code Fix Recommendation\n\nHere's a simple fix using a whitelist:\n\n```javascript\nconst allowedParsers = ['parser1', 'parser2', 'parser3'];\nif (!allowedParsers.includes(name)) {\n    throw new Error('Invalid parser');\n}\nconst parser = require(`./parsers/${name}`);\n```\n\n## Library Dependencies\n\nThe provided code snippet does not explicitly require any library dependencies. However, the mitigation advice and source code fix recommendation may require the following:\n\n- A library or framework for input validation and sanitization.\n\n## References\n\n- [OWASP XSS (Cross Site Scripting) Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [OWASP Node.js Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Nodejs_Security_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "ea9c36e7-7dee-3616-a569-4867ab40526b",
+              "name": "Non-literal variable string concatenation vulnerability in util.format/console.log function",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe vulnerability in question is related to the use of non-literal variable string concatenation in the `console.log` function. This can potentially lead to a variety of security issues, including but not limited to, code injection attacks. In this specific case, the variables `i`, `res.parserName`, and `message` are directly embedded into the string without any form of sanitization or encoding, which could lead to potential security risks if these variables contain malicious input.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to always sanitize and/or encode user input before using it in string concatenation. This can help prevent potential code injection attacks. Additionally, it is also recommended to use parameterized queries or prepared statements whenever possible, as these can also help prevent code injection attacks.\n\n## Source Code Fix Recommendation\n\n```javascript\nconsole.log('SNS-Record[%s]: Sending Slack message from Parser[%s]:', i, res.parserName, JSON.stringify(message, null, 2));\n```\n\nIn this fixed code, we are using `%s` as placeholders for the variables `i` and `res.parserName`. This way, the variables are not directly embedded into the string, which can help prevent potential code injection attacks.\n\n## Library Dependencies\n\nThe code example does not appear to require any specific library dependencies to execute properly.\n\n## OWASP Resources\n\n- [OWASP Top 10 2017: Injection](https://owasp.org/www-project-top-ten/2017/A1_2017-Injection)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html)\n- [CWE-116: Improper Encoding or Escaping of Output](https://cwe.mitre.org/data/definitions/116.html)\n\nPlease note that the links provided are valid and active at the time of writing this report."
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-89",
+                    "url": "https://cwe.mitre.org/data/definitions/89.html"
+                  },
+                  {
+                    "id": "CWE-116",
+                    "url": "https://cwe.mitre.org/data/definitions/116.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-89",
+                  "CWE-116"
+                ]
+              }
+            },
+            {
+              "id": "21173831-72b0-3f96-9f1f-9418bef37dec",
+              "name": "Potential XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when data enters a program from an untrusted source and is used to generate dynamic HTML content. The \"Potential XSS Vulnerability from User-Controlled Data in HTML String\" vulnerability in JavaScript refers to the situation where user-controlled data is directly included in an HTML string without proper sanitization or encoding. This can allow an attacker to inject malicious scripts that can be executed in the context of the victim's browser.\n\nIn the provided code snippet, the variable `path` is directly included in the string that is logged to the console. If `path` is user-controlled and not properly sanitized, this could potentially lead to an XSS vulnerability.\n\n## Mitigation Advice\n\nTo mitigate this type of vulnerability, you should always sanitize and/or encode user-controlled data before including it in an HTML string. Sanitization involves removing or replacing any potentially harmful characters, while encoding involves transforming these characters into a safe format that can be included in HTML without risk.\n\nIn JavaScript, you can use functions like `encodeURIComponent` or `encodeURI` to encode user-controlled data. For sanitization, you can use libraries like DOMPurify or js-xss.\n\n## Source Code Fix Recommendation\n\nHere is a simple fix for the provided code snippet using `encodeURIComponent`:\n\n```javascript\nconsole.error(`event.consoleUrl(): given unparsable path: ${encodeURIComponent(path)}`);\n```\n\nPlease note that this is a basic fix and may not cover all potential edge cases. Depending on the context, you might need to use a more comprehensive sanitization or encoding method.\n\n## Library Dependencies\n\nThe provided code snippet does not appear to have any library dependencies.\n\n## OWASP and CWE Resources\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "24497075-2cea-3c57-ac50-aca52e9c7132",
+              "name": "Non-literal variable string concatenation vulnerability in util.format/console.log function",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nIn JavaScript, the `console.log` function is often used for debugging purposes. However, it can also be a source of security vulnerabilities if not used properly. Specifically, the non-literal variable string concatenation vulnerability in `util.format/console.log` function refers to the insecure practice of concatenating non-literal variables into a string that is then passed to the `console.log` function. This can lead to various types of injection attacks, such as Cross-Site Scripting (XSS) or Command Injection, if the concatenated variables contain malicious user input.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid directly concatenating non-literal variables into strings that are passed to the `console.log` function. Instead, use parameterized messages or sanitize the input before concatenation. \n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the provided code:\n\n```javascript\nconsole.log('Message looked like JSON, but failed parse: %s', err.message, this.record);\n```\n\nIn this version, the `console.log` function uses a format string (`%s`) to safely insert the `err.message` into the log message. This prevents any potential injection attacks.\n\n## Library Dependencies\n\nThe provided code does not require any additional library dependencies to execute properly.\n\n## OWASP and CWE Links\n\n- [OWASP - Cross-Site Scripting (XSS)](https://owasp.org/www-community/attacks/xss/)\n- [OWASP - Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [CWE-117: Improper Output Neutralization for Logs](https://cwe.mitre.org/data/definitions/117.html)\n\nPlease note that the links provided are valid and active for anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-117",
+                    "url": "https://cwe.mitre.org/data/definitions/117.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-117"
+                ]
+              }
+            },
+            {
+              "id": "ca67d425-177a-3bcf-9557-bb246f4ed809",
+              "name": "Non-literal variable string concatenation vulnerability in util.format/console.log function",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Non-literal variable string concatenation vulnerability in util.format/console.log function\" in JavaScript refers to a potential security risk where an attacker can inject malicious code or commands through the variables used in string concatenation within the `console.log` or `util.format` functions. This can lead to various types of attacks such as Cross-Site Scripting (XSS), SQL Injection, and Command Injection attacks.\n\nIn the provided code snippet, the `console.error` function uses template literals to concatenate variables `numTries`, `waitFor`, and `e` into a string. If these variables contain user-supplied data, it could lead to a potential security vulnerability.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to properly sanitize and validate all user-supplied inputs. Avoid directly concatenating user-supplied data into strings that are processed by the `console.log` or `util.format` functions. Instead, use parameterized queries or prepared statements. \n\n## Source Code Fix Recommendation\n\n```javascript\nconsole.error(`[ERROR-Retryable] attempt#${sanitize(numTries)}, waiting ${sanitize(waitFor)}ms]:`, sanitize(e));\n```\n\nIn the above code, `sanitize` is a hypothetical function that you would implement to sanitize the input. The actual implementation would depend on the nature of the data.\n\n## Library Dependencies\n\nThe provided code snippet does not require any additional library dependencies to execute properly.\n\n## OWASP and CWE Resources\n\n- [OWASP - Cross-Site Scripting (XSS)](https://owasp.org/www-community/attacks/xss/)\n- [OWASP - SQL Injection](https://owasp.org/www-community/attacks/SQL_Injection)\n- [OWASP - Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)\n- [CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')](https://cwe.mitre.org/data/definitions/89.html)\n- [CWE-77: Improper Neutralization of Special Elements used in a Command ('Command Injection')](https://cwe.mitre.org/data/definitions/77.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  },
+                  {
+                    "id": "CWE-89",
+                    "url": "https://cwe.mitre.org/data/definitions/89.html"
+                  },
+                  {
+                    "id": "CWE-77",
+                    "url": "https://cwe.mitre.org/data/definitions/77.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79",
+                  "CWE-89",
+                  "CWE-77"
+                ]
+              }
+            },
+            {
+              "id": "60546304-5b69-3e1e-baf8-405318e6decd",
+              "name": "Non-literal variable string concatenation vulnerability in util.format/console.log function",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Non-literal variable string concatenation vulnerability in util.format/console.log function\" is a type of security vulnerability in JavaScript that occurs when user-controlled data is directly embedded into a string that is processed by the `console.log` function or `util.format` function. This can potentially lead to various types of attacks, such as command injection or cross-site scripting (XSS), if the user-controlled data contains malicious content.\n\nIn the provided code example, the `res.parserName` is directly embedded into the string that is passed to the `console.log` function. If `res.parserName` is user-controlled and contains malicious content, it could lead to a security vulnerability.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should avoid directly embedding user-controlled data into strings that are processed by the `console.log` function or `util.format` function. Instead, you should use proper output encoding or sanitization to ensure that the user-controlled data does not contain any malicious content.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the provided code example:\n\n```javascript\nconsole.log('Sending Slack message from Parser[%s]:', res.parserName, JSON.stringify(message, null, 2));\n```\n\nIn this fixed version, the `res.parserName` is passed as a separate argument to the `console.log` function, which automatically handles any necessary escaping or encoding.\n\n## Library Dependencies\n\nThe provided code example does not appear to require any specific library dependencies to execute properly.\n\n## OWASP Resources\n\n- [OWASP Top 10 2017: Injection](https://owasp.org/www-project-top-ten/2017/A1_2017-Injection)\n- [OWASP Cheat Sheet: DOM based XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-116: Improper Encoding or Escaping of Output](https://cwe.mitre.org/data/definitions/116.html)\n\nPlease note that the provided links are valid and active at the time of writing this report."
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-116",
+                    "url": "https://cwe.mitre.org/data/definitions/116.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-116"
+                ]
+              }
+            },
+            {
+              "id": "ca33f41e-5a07-33e4-84bc-28773586992c",
+              "name": "Non-Literal Argument in Require Function Vulnerability Detected",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Non-Literal Argument in Require Function Vulnerability Detected\" vulnerability in JavaScript occurs when the argument passed to the `require` function is not a string literal, but a variable or an expression. This can potentially lead to a security risk known as \"Path Traversal\" or \"Directory Traversal\". An attacker could manipulate the value of the variable or expression to load and execute malicious code from arbitrary paths.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using non-literal requires. Always use static paths in your `require` statements. If dynamic requires are necessary, ensure that the input is properly validated and sanitized to prevent path traversal attacks.\n\n## Source Code Fix Recommendation\n\nInstead of using a variable in the `require` function, use a switch-case or if-else statements to determine which parser to load. Here is an example:\n\n```javascript\nlet parser;\nswitch(name) {\n    case 'parser1':\n        parser = require('./parsers/parser1');\n        break;\n    case 'parser2':\n        parser = require('./parsers/parser2');\n        break;\n    // add more cases as needed\n    default:\n        throw new Error('Invalid parser name');\n}\n```\n\n## Library Dependencies\n\nThe code example does not explicitly require any library dependencies to execute properly.\n\n## References\n\n- [CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')](https://cwe.mitre.org/data/definitions/22.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-22",
+                    "url": "https://cwe.mitre.org/data/definitions/22.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-22"
+                ]
+              }
+            },
+            {
+              "id": "d87b76e2-3a00-33a0-87b3-d765c2b7e9c3",
+              "name": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\"",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when data enters a program from an untrusted source and the data is used to generate dynamic HTML content. XSS attacks enable attackers to inject client-side scripts into web pages viewed by other users. A cross-site scripting vulnerability may be used by attackers to bypass access controls such as the same-origin policy.\n\nIn the provided code snippet, the potential XSS vulnerability arises from the use of template literals to generate a string that is logged to the console. If the `parser.name` or `err` variables contain user-controlled data, this could lead to an XSS attack.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always escape user-controlled data before using it to generate HTML content. This can be done using built-in JavaScript functions or third-party libraries designed for this purpose.\n\n## Source Code Fix Recommendation\n\nIn this case, since the data is being logged to the console and not used to generate HTML content, the risk of an XSS attack is low. However, if the data were to be used in an HTML context, you could escape it using a function like this:\n\n```javascript\nfunction escapeHtml(unsafe) {\n    return unsafe\n         .replace(/&/g, \"&amp;\")\n         .replace(/</g, \"&lt;\")\n         .replace(/>/g, \"&gt;\")\n         .replace(/\"/g, \"&quot;\")\n         .replace(/'/g, \"&#039;\");\n }\n\nconsole.error(`matchToParser[${escapeHtml(parser.name)}]`, escapeHtml(err));\n```\n\n## Library Dependencies\n\nThe provided code snippet does not appear to require any library dependencies to execute properly.\n\n## OWASP and CWE Links\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "08de06e2-2fa4-3d6f-8dd5-b77775c4796f",
+              "name": "XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when an application includes untrusted data in a new web page without proper validation or escaping, or updates an existing web page with user-supplied data using a browser API that can create HTML or JavaScript. XSS allows attackers to execute scripts in the victim's browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.\n\nIn the provided JavaScript code, the potential XSS vulnerability arises from the use of user-controlled data (`event`) in an HTML string that is logged to the console. If the `event` data is not properly sanitized, it could lead to an XSS attack.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always escape untrusted data based on the HTML context (body, attribute, JavaScript, CSS, or URL) that the data will be placed into. In this case, since the data is being placed into a JavaScript context, you should use JavaScript encoding before including the user data.\n\n## Source Code Fix Recommendation\n\n```javascript\nconsole.error(`Error parsing event JSON (continuing...): ${encodeURI(event)}`);\n```\n\nIn this fix, the `encodeURI` function is used to encode the `event` data, which will escape any special characters that could be used to inject malicious scripts.\n\n## Library Dependencies\n\nThe provided code example does not require any additional library dependencies to execute properly.\n\n## References\n\n- [OWASP XSS (Cross Site Scripting) Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [OWASP DOM based XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "ced5f3cf-53ad-3595-b2bc-7bc783a7f0dd",
+              "name": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\"",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Potential XSS Vulnerability from User-Controlled Data in HTML String\" vulnerability in JavaScript refers to a situation where an attacker can inject malicious scripts into web pages viewed by other users. This is possible when a web application uses input from a user within the output it generates without validating or encoding it.\n\nIn the provided code, the user-controlled data is being directly embedded into the URL string without proper sanitization. This could potentially lead to Cross-Site Scripting (XSS) attacks if an attacker is able to control the `region`, `logGroupName`, `filterPattern`, or `logsTimeRange` variables.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to always encode user-controlled data before including it in HTML output. This can be done using JavaScript's built-in `encodeURIComponent()` function, which encodes special characters. In addition, you should also validate user input to ensure it conforms to expected formats.\n\n## Source Code Fix Recommendation\n\nThe code should be fixed to encode all user-controlled data:\n\n```javascript\nreturn `https://console.aws.amazon.com/cloudwatch/home?${encodeURIComponent(region)}`\n\t\t\t+ `#logEventViewer:group=${encodeURIComponent(logGroupName)}`\n\t\t\t+ (filterPattern ? `;filter=${encodeURIComponent(filterPattern)}` : \"\")\n\t\t\t+ `;start=${encodeURIComponent(logsTimeRange.start)};end=${encodeURIComponent(logsTimeRange.end)}`;\n```\n\n## Library Dependencies\n\nThe provided code does not appear to have any library dependencies.\n\n## References\n\n- [OWASP XSS (Cross Site Scripting) Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "81dd0bcc-840d-3b91-b522-d6c7bfef8058",
+              "name": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\"",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nA potential Cross-Site Scripting (XSS) vulnerability from user-controlled data in HTML string exists when an application includes untrusted data in a new HTML string used in a web page. XSS vulnerabilities occur when an application includes user-controllable data in a page sent to the user without properly validating or escaping that content. In this case, the vulnerability is in the JavaScript code where the user-controlled data is directly used to create a style string.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to:\n\n1. Avoid inserting untrusted data into your HTML document, especially into script tags or event handlers.\n2. Use appropriate response headers to prevent any kind of XSS vulnerabilities.\n3. Validate user input: User input should always be validated before used in the application.\n4. Escape user input: If user input is used in HTML output, it should be escaped properly to prevent any malicious code execution.\n\n## Source Code Fix Recommendation\n\nIn the provided code, the user-controlled data `m.thickness` and `m.dashed` are directly used to create a style string. This can be fixed by properly validating and escaping the user-controlled data before using it. Here is a fixed version of the code:\n\n```javascript\nconst styles = _.map(this.metrics, m => {\n  let thickness = _.escape(m.thickness);\n  let dashed = _.escape(m.dashed);\n  return dashed ? `${thickness},5,5` : thickness;\n});\n```\n\nIn this fixed version, the `_.escape` function from lodash library is used to escape the user-controlled data.\n\n## Library Dependencies\n\nThe code example requires the following library to execute properly:\n\n- lodash\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "45bb8a9b-8557-3f47-804d-8d44f2d69ab5",
+              "name": "XSS Vulnerability in User-Controlled HTML Data",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when an application includes untrusted data in a new web page without proper validation or escaping, or updates an existing web page with user-supplied data using a browser API that can create HTML or JavaScript. XSS allows attackers to execute scripts in the victim's browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.\n\nIn the provided code snippet, the application is taking user input directly through `event.getAccountId()` and appending it to the `author_name` string. If an attacker can control the value of `event.getAccountId()`, they could potentially inject malicious scripts that would be executed when the `author_name` string is rendered in a web page.\n\n## Mitigation Advice\n\nTo mitigate XSS vulnerabilities, you should:\n\n- Use frameworks that automatically escape XSS by design, such as Ruby on Rails, React JS, etc.\n- Escape untrusted HTTP request data based on the context in the HTML output (body, attribute, JavaScript, CSS, or URL) will resolve Reflected and Stored XSS vulnerabilities.\n- Apply context-sensitive encoding when modifying the browser document on the client side acts against DOM XSS.\n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, you can mitigate the XSS vulnerability by properly escaping the user input. Here's how you can do it using a simple function that replaces special characters with their HTML entities:\n\n```javascript\nfunction escapeHtml(unsafe) {\n    return unsafe\n         .replace(/&/g, \"&amp;\")\n         .replace(/</g, \"&lt;\")\n         .replace(/>/g, \"&gt;\")\n         .replace(/\"/g, \"&quot;\")\n         .replace(/'/g, \"&#039;\");\n }\n\nconst author_name = \"AWS CodeBuild\"\n\t\t+ (event.getAccountId() ? ` (${escapeHtml(event.getAccountId())})` : \"\");\n```\n\n## Library Dependencies\n\nThe provided code snippet does not require any additional library dependencies to execute properly.\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "da113207-04cb-326c-83aa-06351e88936f",
+              "name": "Potential XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when data enters a program from an untrusted source and is used to generate dynamic HTML content. The vulnerability here is that the `region` and `kind` variables in the URL string are user-controlled and not sanitized before being used to generate the URL. This could allow an attacker to inject malicious scripts into the URL, which would then be executed when the URL is accessed.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always sanitize user-controlled data before using it to generate dynamic HTML content. This can be done by encoding the data to ensure that any potentially harmful characters are not interpreted as code. \n\n## Source Code Fix\n\nHere's a simple fix using JavaScript's built-in `encodeURIComponent` function to sanitize the `region` and `kind` variables:\n\n```javascript\nconst findingBaseUrl = `https://console.aws.amazon.com/inspector/home?region=${encodeURIComponent(region)}#/${encodeURIComponent(kind)}`;\n```\n\n## Library Dependencies\n\nThe provided code snippet does not require any additional library dependencies to execute properly.\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "b01fd755-8540-3567-a88d-010cc5e6ad94",
+              "name": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\"",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when data enters a program from an untrusted source and is used to generate dynamic HTML content. The vulnerability in the provided code snippet arises from the use of user-controlled data (`field.title`) in an HTML string without proper sanitization. This could allow an attacker to inject malicious scripts that can be executed in the context of the victim's browser.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to:\n\n1. Always validate and sanitize user input: Ensure that user input matches expected patterns and does not contain malicious content.\n\n2. Use context-specific output encoding: When user input is inserted into HTML, JavaScript, CSS, or URL contexts, use context-specific encoding to prevent injection attacks.\n\n3. Use Content Security Policy (CSP): CSP is a security layer that helps detect and mitigate certain types of attacks, including XSS and data injection attacks.\n\n## Source Code Fix\n\nThe provided code snippet already uses a function `escape()` to sanitize `field.title`. However, it's not clear what this function does. If it's not properly implemented, it might not prevent XSS attacks. A better approach would be to use a well-tested library for HTML encoding, such as `he` for Node.js:\n\n```javascript\nconst he = require('he');\nhtml.push(`<div style=\"float:left;width:48%\"><div style=\"font-weight:bold\">${he.encode(field.title)}`);\n```\n\n## Library Dependencies\n\nThe fixed code example requires the `he` library:\n\n```bash\nnpm install he\n```\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [OWASP DOM based XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "17ccad65-bc0a-31fe-89a4-feb6daddaef8",
+              "name": "Potential XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when data enters a program from an untrusted source and the data is used to generate dynamic HTML content. An attacker can inject malicious scripts into the HTML content, which will be executed by the victim's browser. In this case, the vulnerability arises from user-controlled data in an HTML string.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to always escape untrusted HTTP request data based on the HTML context (body, attribute, JavaScript, CSS, or URL) that the data will be placed into. \n\n## Source Code Fix Recommendation\n\nIn the provided code snippet, the `escape()` function is used to sanitize the `field.value` before it is inserted into the HTML string. This is a good practice as it helps to prevent XSS attacks by converting potentially harmful characters into their HTML-encoded equivalent.\n\n```javascript\nhtml.push(`</div><p style=\"margin:.5em 0\">${escape(field.value)}</p></div>`);\n```\n\n## Library Dependencies\n\nThe provided code snippet does not appear to have any library dependencies.\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "4d01fabc-dbdf-3f7b-a87f-b79cc1d0c6fe",
+              "name": "Potential XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when data enters a program from an untrusted source and is used to generate dynamic HTML content. The \"Potential XSS Vulnerability from User-Controlled Data in HTML String\" vulnerability in JavaScript refers to a situation where user-controlled data is directly embedded into HTML strings. This can allow an attacker to inject malicious scripts, which will be executed in the browser of any user viewing the generated HTML.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to:\n\n1. **Validate Input**: Ensure that all user-supplied input is validated before it is processed. This can help to prevent the execution of malicious scripts.\n\n2. **Encode Output**: Encode user-supplied data before it is included in HTML output. This can prevent the data from being interpreted as code by the browser.\n\n3. **Use Appropriate Response Headers**: Use HTTP headers to restrict how user-supplied data can be used in the browser. For example, the Content-Security-Policy header can be used to prevent the execution of inline scripts.\n\n4. **Use Safe APIs**: Use APIs, such as the DOM 'textContent' property or jQuery 'text' method, which automatically encode output.\n\n## Source Code Fix Recommendation\n\nThe specific vulnerability sink can be fixed by using the 'textContent' property to safely encode the user-controlled data:\n\n```javascript\nlet element = document.createElement('div');\nelement.textContent = `> ${field.title}: ${field.value}\\n`;\ntext.push(element);\n```\n\n## Library Dependencies\n\nThe code example does not require any library dependencies to execute properly.\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [OWASP DOM based XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "e6fb9935-6316-39be-b781-675bd2cf670e",
+              "name": "XSS Vulnerability in User-Controlled HTML Data",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nCross-Site Scripting (XSS) vulnerabilities occur when an application includes untrusted data in a new web page without proper validation or escaping, or updates an existing web page with user-supplied data using a browser API that can create HTML or JavaScript. XSS allows attackers to execute scripts in the victim's browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.\n\nIn the provided code snippet, the application is using a template literal to include user-controlled data (`event`) in an HTML context. If the `event` data is not properly sanitized, it could lead to an XSS vulnerability.\n\n## Mitigation Advice\n\nTo mitigate XSS vulnerabilities, it's important to:\n\n- Use a safe API which avoids the use of the interpreter entirely or provides a parameterized interface.\n- Positive or \"whitelist\" input validation can also be effective, as it prevents any input not explicitly allowed.\n- For any data that is included in an HTML context, ensure it is properly HTML encoded.\n- Use appropriate response headers to prevent any content sniffing attacks.\n\n## Source Code Fix Recommendation\n\nThe provided code is already using the `escape` function to sanitize the `event` data before it is included in the HTML context. This should mitigate the potential XSS vulnerability. However, it's important to ensure that the `escape` function is properly implemented to handle all potential edge cases.\n\n```javascript\nfunction escape(str) {\n    var div = document.createElement('div');\n    div.appendChild(document.createTextNode(str));\n    return div.innerHTML;\n}\n\nhtml.push(`<pre style=\"color:#ccc;color:rgba(0,0,0,.08);font-size:.5em;font-weight:100;line-height:.8;letter-spacing:-1px;word-break:break-all;white-space:pre-wrap;\">${escape(JSON.stringify(event))}</pre>`);\n```\n\n## Library Dependencies\n\nThe provided code does not appear to have any library dependencies.\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "ef4e128c-6855-398a-92cc-14a986056206",
+              "name": "Potential XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe code snippet provided is vulnerable to Cross-Site Scripting (XSS) attacks. XSS is a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites. In this case, the vulnerability arises from the fact that user-controlled data is being used in an HTML string without proper sanitization or encoding. This could allow an attacker to inject malicious scripts that could be executed in the context of the victim's browser.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to always encode user-controlled data before using it in an HTML context. This can be done using built-in JavaScript functions or third-party libraries that provide HTML encoding functionality. Additionally, it is also recommended to use Content Security Policy (CSP) to reduce the risk of XSS attacks.\n\n## Source Code Fix Recommendation\n\nThe following code snippet demonstrates how to fix the vulnerability by encoding the user-controlled data:\n\n```javascript\nstr = _.replace(str, /<([^|]+)\\|([^>]+)>/g, (s, a1, a2) => `<a href=\"${encodeURI(a1)}\">${_.escape(a2)}</a>`);\n```\n\nIn this code, `encodeURI` is used to encode the URL and `_.escape` is used to escape the HTML content. Both functions help to prevent XSS attacks by ensuring that user-controlled data is properly encoded.\n\n## Library Dependencies\n\nThe code example requires the following library:\n\n- Lodash (`lodash`)\n\n## References\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            },
+            {
+              "id": "4987e831-f112-3904-b0d6-11640ace5fa0",
+              "name": "Potential XSS Vulnerability from User-Controlled Data in HTML String",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe code snippet provided is vulnerable to Cross-Site Scripting (XSS) attacks. This is because it takes user-controlled data and inserts it into an HTML string without proper sanitization or encoding. An attacker could potentially inject malicious scripts into the user-controlled data, which would then be executed when the HTML string is rendered in a web browser.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should always sanitize and/or encode user-controlled data before inserting it into an HTML string. This can be done using various methods, such as HTML encoding, JavaScript encoding, CSS encoding, URL encoding, etc. depending on the context in which the data is used.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the code snippet using lodash's `_.escape` function to sanitize the user-controlled data:\n\n```javascript\nstr = _.replace(str, /(^|[^*])\\*([^*]*)\\*([^*]|$)/g, (s, a1, a2, a3) => `${a1}<b>${_.escape(a2)}</b>${a3}`);\n```\n\n## Library Dependencies\n\nThe code example requires the following library to execute properly:\n\n- lodash\n\n## OWASP and CWE Links\n\n- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)\n- [CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')](https://cwe.mitre.org/data/definitions/79.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-79",
+                    "url": "https://cwe.mitre.org/data/definitions/79.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-79"
+                ]
+              }
+            }
+          ],
+          "language": "en-US",
+          "contents": [
+            "localizedData",
+            "nonLocalizedData"
+          ],
+          "isComprehensive": false
+        }
+      },
+      "language": "en-US",
+      "results": [
+        {
+          "ruleId": "5195880b-c0e9-3d85-a865-ac44192f91ca",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-literal variable string concatenation vulnerability in util.format/console.log function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 99,
+                  "startColumn": 19,
+                  "endLine": 99,
+                  "endColumn": 50,
+                  "snippet": {
+                    "text": "\t\t\t\tconsole.error(`matchToParser[${parser.name}]`, err);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "db93a2f042ff5bff7f335ad657db7a1ff8d117f49f7a535db87bfdd7a94e9ce9",
+            "glog-pfp-ruleFileCode/v1": "625b05dfe0eba27d88df1102e03c3ac81751b4c5d837e8e0cd0b85f7e9856c80"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "625b05dfe0eba27d88df1102e03c3ac81751b4c5d837e8e0cd0b85f7e9856c80"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "4f964b1c-7ec8-3f51-a389-a71a1f67eb66",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-literal variable string concatenation vulnerability in util.format/console.log function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 80,
+                  "startColumn": 19,
+                  "endLine": 80,
+                  "endColumn": 64,
+                  "snippet": {
+                    "text": "\t\t\t\tconsole.error(`Error parsing event [parser:${parserName}]:`, e);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "cc252a8ce361ef36d989cdd0c76db8e977e16dbaea297aefd62a18afd05ec3a0",
+            "glog-pfp-ruleFileCode/v1": "b05d0b2757ca9b8fa824ed62b1e98213a7165672e9a1b21b87c4b490d777a113"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "b05d0b2757ca9b8fa824ed62b1e98213a7165672e9a1b21b87c4b490d777a113"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "ea9c36e7-7dee-3616-a569-4867ab40526b",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-literal variable string concatenation vulnerability in util.format/console.log function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 143,
+                  "startColumn": 19,
+                  "endLine": 143,
+                  "endColumn": 92,
+                  "snippet": {
+                    "text": "\t\t\t\t\t\tconsole.log(`SNS-Record[${i}]: Sending Slack message from Parser[${res.parserName}]:`, JSON.stringify(message, null, 2));"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "ae2d4f26201dc2ad88b94de3478ada77741b6f19c056adbfc67db046f80403b7",
+            "glog-pfp-ruleFileCode/v1": "64e450c9e087bc83c7addccb174235a9f831f71f800f20e223b228f7a121fbb4"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "64e450c9e087bc83c7addccb174235a9f831f71f800f20e223b228f7a121fbb4"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "8554548d-ee43-3513-85a1-fe40d82183df",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 36,
+                  "startColumn": 4,
+                  "endLine": 36,
+                  "endColumn": 47,
+                  "snippet": {
+                    "text": "\t\t\tconst parser = require(`./parsers/${name}`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "5febb5b2e2f70b4cf08b1cc280d56dc394f93e3d403c453c9469cfda643dcfba",
+            "glog-pfp-ruleFileCode/v1": "6ae5b8c1f99f11422c3cad505eea334e32ad235a842d18c04cb93d7ece42da45"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "6ae5b8c1f99f11422c3cad505eea334e32ad235a842d18c04cb93d7ece42da45"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "21173831-72b0-3f96-9f1f-9418bef37dec",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/eventdef.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 196,
+                  "startColumn": 5,
+                  "endLine": 196,
+                  "endColumn": 73,
+                  "snippet": {
+                    "text": "\t\t\t\tconsole.error(`event.consoleUrl(): given unparsable path: ${path}`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "6a6a7dd6ecf447ec292c85a76ee3e942ff5ec10035993c746cdca7f431c0bdc4",
+            "glog-pfp-ruleFileCode/v1": "7ce1e9c61f94ae5f96f56ac9fd4948371520c16ed8dbec1b88e497c2cb75c9e3"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "7ce1e9c61f94ae5f96f56ac9fd4948371520c16ed8dbec1b88e497c2cb75c9e3"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "24497075-2cea-3c57-ac50-aca52e9c7132",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-literal variable string concatenation vulnerability in util.format/console.log function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/eventdef.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 17,
+                  "endLine": 28,
+                  "endColumn": 77,
+                  "snippet": {
+                    "text": "\t\t\t\tconsole.log(`Message looked like JSON, but failed parse: ${err.message}`, this.record);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "78360124c1e80f3a3cb5a334c391c4b7462f3d2d56cde6665c5fb3c8c6601f66",
+            "glog-pfp-ruleFileCode/v1": "7ab6f0e6a21e3a0469e36d17fd552b58bc53d7bfde5a90b32ec9bc3e1b448e34"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "7ab6f0e6a21e3a0469e36d17fd552b58bc53d7bfde5a90b32ec9bc3e1b448e34"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "ca67d425-177a-3bcf-9557-bb246f4ed809",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-literal variable string concatenation vulnerability in util.format/console.log function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/slack.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 131,
+                  "startColumn": 19,
+                  "endLine": 131,
+                  "endColumn": 82,
+                  "snippet": {
+                    "text": "\t\t\t\tconsole.error(`[ERROR-Retryable] attempt#${numTries}, waiting ${waitFor}ms]:`, e);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "1f286ef6bc00688b7dba0ed4ab688772f09c4359014c5571a67aefd90513b7cc",
+            "glog-pfp-ruleFileCode/v1": "ff3c1e79dab498078bf99cb8787951723b7a53aa89c320d0ad6a635a60b827d2"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "ff3c1e79dab498078bf99cb8787951723b7a53aa89c320d0ad6a635a60b827d2"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "ca33f41e-5a07-33e4-84bc-28773586992c",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-Literal Argument in Require Function Vulnerability Detected"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 36,
+                  "startColumn": 19,
+                  "endLine": 36,
+                  "endColumn": 47,
+                  "snippet": {
+                    "text": "\t\t\tconst parser = require(`./parsers/${name}`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "3efaf2de5cf166e9921935d66b50ce3fa6655bf5812c9f04a71fab66e08a8c10",
+            "glog-pfp-ruleFileCode/v1": "f21f48ba6f77a83feefffeb6dc60d72425151ef69bae87d19aef02af905157e9"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "f21f48ba6f77a83feefffeb6dc60d72425151ef69bae87d19aef02af905157e9"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "d87b76e2-3a00-33a0-87b3-d765c2b7e9c3",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 99,
+                  "startColumn": 5,
+                  "endLine": 99,
+                  "endColumn": 57,
+                  "snippet": {
+                    "text": "\t\t\t\tconsole.error(`matchToParser[${parser.name}]`, err);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "ca183d7ad9ecceada694c33e1bf3038e9c9b48c9bfa3505c911378cf10021097",
+            "glog-pfp-ruleFileCode/v1": "e6c0db9c3b60c3836e033be6d7da4cf5f8e1bf2136c025d23f95d4e2b231bde1"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "e6c0db9c3b60c3836e033be6d7da4cf5f8e1bf2136c025d23f95d4e2b231bde1"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "60546304-5b69-3e1e-baf8-405318e6decd",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-literal variable string concatenation vulnerability in util.format/console.log function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 159,
+                  "startColumn": 18,
+                  "endLine": 159,
+                  "endColumn": 73,
+                  "snippet": {
+                    "text": "\t\t\t\t\tconsole.log(`Sending Slack message from Parser[${res.parserName}]:`, JSON.stringify(message, null, 2));"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "20a8cc733ae3ccb6786a39b1d5b79248b4ad500da9e5520a0ad4f0161c2c4a51",
+            "glog-pfp-ruleFileCode/v1": "be2b4b5c0842b04fd15362fcea9b5836c9c4d66e1cb22f48e6e04fbc07d10ef3"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "be2b4b5c0842b04fd15362fcea9b5836c9c4d66e1cb22f48e6e04fbc07d10ef3"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "08de06e2-2fa4-3d6f-8dd5-b77775c4796f",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 122,
+                  "startColumn": 5,
+                  "endLine": 122,
+                  "endColumn": 73,
+                  "snippet": {
+                    "text": "\t\t\t\tconsole.error(`Error parsing event JSON (continuing...): ${event}`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "7dacd52a298192b96f45f4e91e2556720c1efc5434573088d92a813748ff78ce",
+            "glog-pfp-ruleFileCode/v1": "470b636388ccacc6c139c57969a0faeeb777e9c135bcd6ca0ae38e4e2738ecbf"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "470b636388ccacc6c139c57969a0faeeb777e9c135bcd6ca0ae38e4e2738ecbf"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "ced5f3cf-53ad-3595-b2bc-7bc783a7f0dd",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/parsers/cloudwatch/chart.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 386,
+                  "startColumn": 3,
+                  "endLine": 389,
+                  "endColumn": 63,
+                  "snippet": {
+                    "text": "\t\treturn `https://console.aws.amazon.com/cloudwatch/home?${region}`\n\t\t\t+ `#logEventViewer:group=${encodeURIComponent(logGroupName)}`\n\t\t\t+ (filterPattern ? `;filter=${encodeURIComponent(filterPattern)}` : \"\")\n\t\t\t+ `;start=${logsTimeRange.start};end=${logsTimeRange.end}`;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "227511e76bdbed7715f67d6ec1d078f000518fa75c8a8f06b84f97b88fe2b0df",
+            "glog-pfp-ruleFileCode/v1": "c2b8ad15228e50617101e1d91f70069357934b67ec79550d23af2199922d655d"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "c2b8ad15228e50617101e1d91f70069357934b67ec79550d23af2199922d655d"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "81dd0bcc-840d-3b91-b522-d6c7bfef8058",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/parsers/cloudwatch/chart.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 450,
+                  "startColumn": 40,
+                  "endLine": 450,
+                  "endColumn": 88,
+                  "snippet": {
+                    "text": "\t\tconst styles = _.map(this.metrics, m => m.dashed ? `${m.thickness},5,5` : m.thickness);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "a886f5e8cf97678afec2fa2376662128ec807e924975c31b157cfc4745f22822",
+            "glog-pfp-ruleFileCode/v1": "ff1a88c7dd7f34eb80c3cf096ee49041e46f67b0b5b4541858db7770725c8930"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "ff1a88c7dd7f34eb80c3cf096ee49041e46f67b0b5b4541858db7770725c8930"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "45bb8a9b-8557-3f47-804d-8d44f2d69ab5",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "XSS Vulnerability in User-Controlled HTML Data"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/parsers/codebuild.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 2,
+                  "endLine": 14,
+                  "endColumn": 63,
+                  "snippet": {
+                    "text": "\tconst author_name = \"AWS CodeBuild\"\n\t\t+ (event.getAccountId() ? ` (${event.getAccountId()})` : \"\");"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "6d63851821f45445f12cacd1b60ded89076eddf1ff1607f254d201dae9de2efc",
+            "glog-pfp-ruleFileCode/v1": "d13c23b970b9dd45361bad4e02c47f022a5c27a84c60e2f491a8c7377a418d2e"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "d13c23b970b9dd45361bad4e02c47f022a5c27a84c60e2f491a8c7377a418d2e"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "da113207-04cb-326c-83aa-06351e88936f",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/parsers/inspector.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 149,
+                  "startColumn": 2,
+                  "endLine": 149,
+                  "endColumn": 98,
+                  "snippet": {
+                    "text": "\tconst findingBaseUrl = `https://console.aws.amazon.com/inspector/home?region=${region}#/${kind}`;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "43e525d2846cb3b884e8f929b0c091fc2f92a928b86c63005f2f69119f8e0506",
+            "glog-pfp-ruleFileCode/v1": "88126122b2c9eeb44361f6847dc07ea4789bf992c52ab1e0b29120ebefb787e5"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "88126122b2c9eeb44361f6847dc07ea4789bf992c52ab1e0b29120ebefb787e5"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "b01fd755-8540-3567-a88d-010cc5e6ad94",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Potential XSS Vulnerability from User-Controlled Data in HTML String\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ses.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 123,
+                  "startColumn": 4,
+                  "endLine": 123,
+                  "endColumn": 104,
+                  "snippet": {
+                    "text": "\t\t\thtml.push(`<div style=\"float:left;width:48%\"><div style=\"font-weight:bold\">${escape(field.title)}`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "5e1393298b69937ee8fae04e038b9c1012452db173aeb2325ee8c5480e2dd24d",
+            "glog-pfp-ruleFileCode/v1": "f81e0acd93a82fac72c8f5f5b239825ee4cae1c7744c990842219ff916dfe434"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "f81e0acd93a82fac72c8f5f5b239825ee4cae1c7744c990842219ff916dfe434"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "17ccad65-bc0a-31fe-89a4-feb6daddaef8",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ses.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 124,
+                  "startColumn": 4,
+                  "endLine": 124,
+                  "endColumn": 81,
+                  "snippet": {
+                    "text": "\t\t\thtml.push(`</div><p style=\"margin:.5em 0\">${escape(field.value)}</p></div>`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "721093e2d1cb26a0c05b5d0cb86a33ae026a4ab94225624ba654d4537125ef3d",
+            "glog-pfp-ruleFileCode/v1": "faf29e81270d1fdddcf6eba1c18d151eb15a294c831bb63aa304798d944a5eac"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "faf29e81270d1fdddcf6eba1c18d151eb15a294c831bb63aa304798d944a5eac"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "4d01fabc-dbdf-3f7b-a87f-b79cc1d0c6fe",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ses.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 125,
+                  "startColumn": 4,
+                  "endLine": 125,
+                  "endColumn": 52,
+                  "snippet": {
+                    "text": "\t\t\ttext.push(`> ${field.title}: ${field.value}\\n`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "07548d3070b52879c3775b6412a0a7d1c9f0d5478619f6808fc0f149811dfcb3",
+            "glog-pfp-ruleFileCode/v1": "0ad35958c4207fbdb5e57ab42d5cbdfda3e19702beaa7d194f704eef87d1781c"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "0ad35958c4207fbdb5e57ab42d5cbdfda3e19702beaa7d194f704eef87d1781c"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "e6fb9935-6316-39be-b781-675bd2cf670e",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "XSS Vulnerability in User-Controlled HTML Data"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ses.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 148,
+                  "startColumn": 3,
+                  "endLine": 148,
+                  "endColumn": 210,
+                  "snippet": {
+                    "text": "\t\thtml.push(`<pre style=\"color:#ccc;color:rgba(0,0,0,.08);font-size:.5em;font-weight:100;line-height:.8;letter-spacing:-1px;word-break:break-all;white-space:pre-wrap;\">${escape(JSON.stringify(event))}</pre>`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "363eb7735902f910f03ead3b97cc1c08e6ad0d708dab328911c684b7d35118a5",
+            "glog-pfp-ruleFileCode/v1": "d725f559abc16ffd1c198c7865bc197f8d840897f1df0e6b5f9fb490b7521d2f"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "d725f559abc16ffd1c198c7865bc197f8d840897f1df0e6b5f9fb490b7521d2f"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "ef4e128c-6855-398a-92cc-14a986056206",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ses.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 174,
+                  "startColumn": 58,
+                  "endLine": 174,
+                  "endColumn": 96,
+                  "snippet": {
+                    "text": "\tstr = _.replace(str, /<([^|]+)\\|([^>]+)>/g, (s, a1, a2) => `<a href=\"${a1}\">${escape(a2)}</a>`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "1be381352749441aaccb6fe56e06efd5609ddebcec4fef724e4289a3312fcaf1",
+            "glog-pfp-ruleFileCode/v1": "35565e2d74e6c6640a7705dca746698b2ff6e44f364b72adfc0d353b721f46c8"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "35565e2d74e6c6640a7705dca746698b2ff6e44f364b72adfc0d353b721f46c8"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "4987e831-f112-3904-b0d6-11640ace5fa0",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential XSS Vulnerability from User-Controlled Data in HTML String"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ses.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 193,
+                  "startColumn": 71,
+                  "endLine": 193,
+                  "endColumn": 98,
+                  "snippet": {
+                    "text": "\tstr = _.replace(str, /(^|[^*])\\*([^*]*)\\*([^*]|$)/g, (s, a1, a2, a3) => `${a1}<b>${a2}</b>${a3}`);"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "15beb3363d828f710d458f657395ea8f6c17d795eaecab3c71b3d353c839a45d",
+            "glog-pfp-ruleFileCode/v1": "139af72526f1b8a441902c14555dfe67c6801761fbc810c2389e2dfaca71b6d6"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "139af72526f1b8a441902c14555dfe67c6801761fbc810c2389e2dfaca71b6d6"
+          },
+          "properties": {}
+        }
+      ],
+      "newlineSequences": [
+        "\r\n",
+        "\n"
+      ]
+    }
+  ]
+}
