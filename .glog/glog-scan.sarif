@@ -1,0 +1,89 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Glog.AI",
+          "organization": "Glog.AI",
+          "fullName": "Glog, Making software more secure",
+          "version": "1.0.0",
+          "semanticVersion": "1.0.0",
+          "informationUri": "https://www.glog.ai",
+          "rules": [
+            {
+              "id": "60546304-5b69-3e1e-baf8-405318e6decd",
+              "name": "Non-literal Variable String Concatenation Vulnerability in util.format/console.log Function",
+              "helpUri": "https://www.glog.ai/",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Non-literal Variable String Concatenation Vulnerability in util.format/console.log Function\" is a type of vulnerability in JavaScript that occurs when user-controlled data is directly concatenated into a string that is processed by the `console.log` function or `util.format` function. This can potentially lead to various types of attacks, such as log injection attacks, where an attacker can manipulate the log entries and cause false information to be logged, or even execute arbitrary code.\n\nIn the provided code snippet, the `res.parserName` is directly concatenated into the string that is logged. If `res.parserName` is user-controlled data, this could potentially lead to a log injection attack.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid directly concatenating user-controlled data into strings that are processed by the `console.log` function or `util.format` function. Instead, use parameterized logging methods, which can ensure that user-controlled data is properly escaped or sanitized before it is logged.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the provided code snippet:\n\n```javascript\nconsole.log('Sending Slack message from Parser[%s]:', res.parserName, JSON.stringify(message, null, 2));\n```\n\nIn this fixed version, the `res.parserName` is passed as a separate argument to the `console.log` function, rather than being directly concatenated into the string. This ensures that it is properly escaped before it is logged.\n\n## Library Dependencies\n\nThe provided code snippet does not appear to require any specific library dependencies to execute properly.\n\n## OWASP and CWE Links\n\n- [OWASP Log Injection](https://owasp.org/www-community/attacks/Log_Injection)\n- [CWE-117: Improper Output Neutralization for Logs](https://cwe.mitre.org/data/definitions/117.html)"
+              },
+              "properties": {
+                "cwe": [
+                  {
+                    "id": "CWE-117",
+                    "url": "https://cwe.mitre.org/data/definitions/117.html"
+                  }
+                ],
+                "severity": "MEDIUM",
+                "kind": "FAIL",
+                "tags": [
+                  "CWE-117"
+                ]
+              }
+            }
+          ],
+          "language": "en-US",
+          "contents": [
+            "localizedData",
+            "nonLocalizedData"
+          ],
+          "isComprehensive": false
+        }
+      },
+      "language": "en-US",
+      "results": [
+        {
+          "ruleId": "60546304-5b69-3e1e-baf8-405318e6decd",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Non-literal Variable String Concatenation Vulnerability in util.format/console.log Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/index.js",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 159,
+                  "startColumn": 18,
+                  "endLine": 159,
+                  "endColumn": 73,
+                  "snippet": {
+                    "text": "\t\t\t\t\tconsole.log(`Sending Slack message from Parser[${res.parserName}]:`, JSON.stringify(message, null, 2));"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "glog-pfp-ruleFileLineCode/v1": "20a8cc733ae3ccb6786a39b1d5b79248b4ad500da9e5520a0ad4f0161c2c4a51",
+            "glog-pfp-ruleFileCode/v1": "be2b4b5c0842b04fd15362fcea9b5836c9c4d66e1cb22f48e6e04fbc07d10ef3"
+          },
+          "fingerprints": {
+            "glog-fp-ruleFileCode/v1": "be2b4b5c0842b04fd15362fcea9b5836c9c4d66e1cb22f48e6e04fbc07d10ef3"
+          },
+          "properties": {}
+        }
+      ],
+      "newlineSequences": [
+        "\r\n",
+        "\n"
+      ]
+    }
+  ]
+}
